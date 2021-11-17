@@ -45,6 +45,7 @@ async function run() {
     const database = client.db("doctors_portal");
     const appointmentsCollection = database.collection("appointments");
     const usersCollection = database.collection("users");
+    const doctorsCollection = database.collection("doctors");
 
     //get api
     app.get("/appointments", async (req, res) => {
@@ -101,6 +102,19 @@ async function run() {
       };
       const result = await doctorsCollection.insertOne(doctor);
       res.json(result);
+    });
+
+    //get doctor
+    app.get("/doctors", async (req, res) => {
+      const cursor = doctorsCollection.find({});
+      const doctors = await cursor.toArray();
+      res.json(doctors);
+    });
+
+    app.get("/doctors/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const doctor = await doctorsCollection.findOne(query);
+      res.json(doctor);
     });
 
     // get admin user
